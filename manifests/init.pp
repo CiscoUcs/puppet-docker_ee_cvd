@@ -42,26 +42,3 @@
 #
 # Copyright 2017 Your name here, unless otherwise noted.
 #
-class ucs {
-
-   include docker_ee_cvd::docker::engine
-   include docker_ee_cvd::docker::role::ucp::controller::master
-   include docker_ee_cvd::docker::role::ucp::controller::replica
-   include docker_ee_cvd::docker::role::ucp::dtr::master
-   include docker_ee_cvd::docker::role::ucp::dtr::replica
-   include docker_ee_cvd::docker::role::ucp::worker
-
-   include ucs::switch_config::install_prerequisite_puppet_modules
-   include ucs::switch_config::enable_features
-   include ucs::switch_config::stp_global_parameters
-   include ucs::switch_config::vlan
-   include ucs::switch_config::peer_links
-   include ucs::switch_config::vpc_domain
-   include ucs::switch_config::host_interface
-   include ucs::switch_config::portchannel
-
-   Class['ucs::switch_config::peer_links'] ->
-   Class['ucs::switch_config::host_interface'] ->
-   Class['ucs::switch_config::portchannel']
-
-}
