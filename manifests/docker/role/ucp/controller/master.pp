@@ -14,14 +14,12 @@ class docker_ee_cvd::docker::role::ucp::controller::master(
   $controller_ip       = $facts['networking']['ip']
   $ucp_controller_node = $facts['networking']['fqdn']
 
-  @@docker_ee_cvd::docker::engine { "${package_repos}" :
-     package_source_location  => $package_source_location,
-     package_key_source       => $package_key_source,
-     tag                      => "${ucp_controller_node}",
+  class { 'docker_ee_cvd::docker::engine':
+   package_source_location  => $package_source_location,
+   package_key_source       => $package_key_source,
+   package_repos            => $package_repos,
   }
   
-  Docker_ee_cvd::Docker::Engine <<| tag == "${ucp_controller_node}" |>>
-
   class { 'docker_ddc::ucp':
     controller         => true,
     version            => $ucp_version,
@@ -32,7 +30,7 @@ class docker_ee_cvd::docker::role::ucp::controller::master(
     external_ca        => $external_ca,
     username           => $ucp_username,
     password           => $ucp_password,
-    require            => Class['docker'],
+    require            => Class['docker_ee_cvd::docker::engine'],
     local_client       => $docker_ee_cvd::docker::params::local_client,
   }
 }

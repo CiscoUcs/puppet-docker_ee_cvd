@@ -1,6 +1,9 @@
 class docker_ee_cvd::docker::role::ucp::controller::replica(
   $ucp_username            = $docker_ee_cvd::docker::params::ucp_username,
   $ucp_password            = $docker_ee_cvd::docker::params::ucp_password,
+  $package_source_location = $docker_ee_cvd::docker::params::package_source_location,
+  $package_key_source      = $docker_ee_cvd::docker::params::package_key_source,
+  $package_repos           = $docker_ee_cvd::docker::params::package_repos,
 ) inherits docker_ee_cvd::docker::params {
 
   $replica_address = $facts['networking']['ip']
@@ -48,7 +51,11 @@ class docker_ee_cvd::docker::role::ucp::controller::replica(
   $ucp_manager_token   = puppetdb_query($ucp_manager_token_query)[0]['value']
   $ucp_fingerprint     = puppetdb_query($ucp_fingerprint_query)[0]['value']
 
-  Docker_ee_cvd::Docker::Engine <<| tag == "${ucp_controller_node}" |>>
+  class { 'docker_ee_cvd::docker::engine':
+    package_source_location  => $package_source_location,
+    package_key_source       => $package_key_source,
+    package_repos            => $package_repos,
+  }
 
   class { 'docker_ddc::ucp':
     version           => $ucp_version,
@@ -60,7 +67,7 @@ class docker_ee_cvd::docker::role::ucp::controller::replica(
     ucp_url           => "https://${$ucp_ipaddress}:${ucp_controller_port}",
     username          => $ucp_username,
     password          => $ucp_password,
-    require           => Class['docker'],
+    require            => Class['docker_ee_cvd::docker::engine'],
     local_client      => $docker_ee_cvd::docker::params::local_client,
    }
 }

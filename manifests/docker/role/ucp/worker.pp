@@ -1,4 +1,7 @@
 class docker_ee_cvd::docker::role::ucp::worker(
+  $package_source_location = $docker_ee_cvd::docker::params::package_source_location,
+  $package_key_source      = $docker_ee_cvd::docker::params::package_key_source,
+  $package_repos           = $docker_ee_cvd::docker::params::package_repos,
 ) inherits docker_ee_cvd::docker::params {
 
   $ucp_ipaddress_query= 'facts {
@@ -45,7 +48,11 @@ class docker_ee_cvd::docker::role::ucp::worker(
   $ucp_fingerprint     = puppetdb_query($ucp_fingerprint_query)[0]['value']
   $ucp_controller_node = puppetdb_query($ucp_hostname_query)[0]['value']
   
-  Docker_ee_cvd::Docker::Engine <<| tag == "${ucp_controller_node}" |>>
+  class { 'docker_ee_cvd::docker::engine':
+    package_source_location  => $package_source_location,
+    package_key_source       => $package_key_source,
+    package_repos            => $package_repos,
+    }
 
   class { 'docker_ddc::ucp':
     version           => $ucp_version,
@@ -55,7 +62,7 @@ class docker_ee_cvd::docker::role::ucp::worker(
     fingerprint       => $ucp_fingerprint,
     ucp_manager       => $ucp_ipaddress,
     ucp_url           => 'https://${$ucp_ipaddress}:$ucp_controller_port',
-    require           => Class['docker'],
+    require           => Class['docker_ee_cvd::docker::engine'],
     local_client      => $docker_ee_cvd::docker::params::local_client,
     }
 }
