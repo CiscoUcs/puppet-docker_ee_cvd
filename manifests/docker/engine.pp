@@ -2,6 +2,7 @@ class docker_ee_cvd::docker::engine(
   $package_source_location = $docker_ee_cvd::docker::params::package_source_location,
   $package_key_source      = $docker_ee_cvd::docker::params::package_key_source,
   $package_repos           = $docker_ee_cvd::docker::params::package_repos,
+  $ntp_server              = undef
 ) inherits docker_ee_cvd::docker::params {
     $os_version   = $facts['os']['release']['major']
 
@@ -31,14 +32,17 @@ class docker_ee_cvd::docker::engine(
       12376, 12379, 12380, 12381, 12382, 12383,
       12384, 12385, 12386, 12387, 19002
     ]
-    $udp_fw_ports=[4789,7946]
+    $udp_fw_ports=[4789,7946,123]
   
     # Docker Datacenter requires nodes participating in the cluster
     # to have their system time be in sync with the external source.
     # We do this by installing NTP services and configuring it to
     # remain in sync with the system time 
     #
-    include '::ntp'
+    
+    class { 'ntp':
+      server => [ $ntp_server ],
+    }
 
     class { 'firewalld': }
 
