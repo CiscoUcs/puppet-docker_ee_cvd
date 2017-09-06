@@ -2,7 +2,7 @@ class docker_ee_cvd::docker::engine(
   $package_source_location = $docker_ee_cvd::docker::params::package_source_location,
   $package_key_source      = $docker_ee_cvd::docker::params::package_key_source,
   $package_repos           = $docker_ee_cvd::docker::params::package_repos,
-  $ntp_server              = undef
+  $ntp_server              = $docker_ee_cvd::docker::params::ntp_server,
 ) inherits docker_ee_cvd::docker::params {
     $os_version   = $facts['os']['release']['major']
 

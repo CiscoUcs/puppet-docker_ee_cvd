@@ -12,4 +12,5 @@ class docker_ee_cvd::docker::params inherits docker_ddc::params {
     $package_repos           = 'stable-17.03'
     #it's a temporary fix
     $local_client            = true
+    $ntp_server              = undef
 }
