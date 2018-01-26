@@ -2,7 +2,6 @@ class docker_ee_cvd::docker::engine(
   $package_source_location = $docker_ee_cvd::docker::params::package_source_location,
   $package_key_source      = $docker_ee_cvd::docker::params::package_key_source,
   $package_repos           = $docker_ee_cvd::docker::params::package_repos,
-  $ntp_server              = $docker_ee_cvd::docker::params::ntp_server,
 ) inherits docker_ee_cvd::docker::params {
     $os_version   = $facts['os']['release']['major']
 
@@ -40,10 +39,6 @@ class docker_ee_cvd::docker::engine(
     # remain in sync with the system time 
     #
     
-    class { 'ntp':
-      server => [ $ntp_server ],
-    }
-
     class { 'firewalld': }
 
     $tcp_fw_ports.each |Integer $tport| {
@@ -64,11 +59,9 @@ class docker_ee_cvd::docker::engine(
         }
     }
     class { 'docker':
-      docker_cs                  => true,
-      package_name               => 'docker-ee',
-      package_cs_source_location => $package_source_location,
-      package_cs_key_source      => $package_key_source,
-      package_repos              => $package_repos,
+      docker_ee                  => true,
+      docker_ee_source_location => $package_source_location,
+      docker_ee_key_source      => $package_key_source,
       tcp_bind                   => 'tcp://127.0.0.1:4243',
       socket_bind                => 'unix:///var/run/docker.sock',
       repo_opt                   => '',
