@@ -20,7 +20,7 @@ class docker_ee_cvd::docker::role::ucp::controller::master(
    package_repos            => $package_repos,
   }
   
-  class { 'docker_ddc::ucp':
+  class { 'docker_ddc':
     controller         => true,
     version            => $ucp_version,
     host_address       => $controller_ip,

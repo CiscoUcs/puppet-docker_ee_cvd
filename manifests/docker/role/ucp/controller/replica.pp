@@ -4,7 +4,6 @@ class docker_ee_cvd::docker::role::ucp::controller::replica(
   $package_source_location = $docker_ee_cvd::docker::params::package_source_location,
   $package_key_source      = $docker_ee_cvd::docker::params::package_key_source,
   $package_repos           = $docker_ee_cvd::docker::params::package_repos,
-  $ntp_server              = $docker_ee_cvd::docker::params::ntp_server,
 ) inherits docker_ee_cvd::docker::params {
 
   $replica_address = $facts['networking']['ip']
@@ -56,10 +55,9 @@ class docker_ee_cvd::docker::role::ucp::controller::replica(
     package_source_location  => $package_source_location,
     package_key_source       => $package_key_source,
     package_repos            => $package_repos,
-    ntp_server               => $ntp_server,
   }
 
-  class { 'docker_ddc::ucp':
+  class { 'docker_ddc':
     version           => $ucp_version,
     token             => $ucp_manager_token,
     listen_address    => $replica_address,
