@@ -2,10 +2,8 @@ class docker_ee_cvd::docker::params inherits docker_ddc::params {
     $ucp_username            = 'admin'
     $ucp_password            = 'puppetlabs'
     $ucp_controller_port     = '19002'
-    # $ucp_version             = '2.2.5'
-    $ucp_version             = '2.1.4'
-    # $dtr_version             = '2.4.1'
-    $dtr_version             = 'latest'
+    $ucp_version             = '2.2.5'
+    $dtr_version             = '2.4.1'
     $docker_socket_path      = '/var/run/docker.sock'
     $license_file            = '/etc/docker/subscription.lic'
     $external_ca             = false
